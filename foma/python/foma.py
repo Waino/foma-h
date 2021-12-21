@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# flake8: noqa
 
 #   Foma: a finite-state toolkit and library.                                 #
 #   Copyright © 2008-2015 Mans Hulden                                         #
@@ -17,11 +18,21 @@
 #   See the License for the specific language governing permissions and       #
 #   limitations under the License.                                            #
 
+import os
 from sys import maxsize, version_info
 from ctypes import *
 from ctypes.util import find_library
 
 fomalibpath = find_library('foma')
+if fomalibpath is None:
+    # Unable to automatically find libfoma.
+    # Allow user to specify location in env variable
+    fomalibpath = os.getenv('FOMA_LIB_PATH')
+    if not fomalibpath:
+        raise ValueError(
+            'Can not find libfoma.so automatically, '
+            'and env variable FOMA_LIB_PATH is unset'
+        )
 foma = cdll.LoadLibrary(fomalibpath)
 
 
